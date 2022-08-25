@@ -1,0 +1,44 @@
+.badgeChip {
+  padding-left: 0.35rem;
+
+  &[data-badge="vip"] {
+    background-color: rgb(255, 152, 240);
+  }
+
+  &[data-badge="event"] {
+    background-color: rgb(152, 255, 250);
+  }
+
+  &[data-badge="gopher"] {
+    background-color: rgb(255, 191, 191);
+  }
+
+  &[data-badge="press"] {
+    background-color: rgb(203, 255, 203);
+  }
+
+  &[data-badge="committee"] {
+    background-color: rgb(211, 178, 255);
+  }
+
+  &[data-badge="guest"] {
+    background-color: rgb(255, 244, 82);
+  }
+}
+
+.noPad {
+  padding: 0px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card,
+  .footer {
+    border-color: #222;
+  }
+  .code {
+    background: #111;
+  }
+  .logo img {
+    filter: invert(1);
+  }
+}
