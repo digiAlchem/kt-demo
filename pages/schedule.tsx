@@ -34,6 +34,7 @@ const exampleScheduleGrid: JSX.Element = (
     <Grid2 xs={12} md={6} lg={4}>
       <Card elevation={2} raised>
         <CardHeader
+          sx={{borderBottom: "1px solid rgb(200, 200, 200)"}}
           title="Main Hall"
           subheader="Butterworth Hall, Arts Centre"
         />
@@ -61,6 +62,7 @@ const exampleScheduleGrid: JSX.Element = (
     <Grid2 xs={12} md={6} lg={4}>
       <Card elevation={2} raised>
         <CardHeader
+          sx={{borderBottom: "1px solid rgb(200, 200, 200)"}}
           title="Medium Events"
           subheader="Studio, Arts Centre"
         />
@@ -98,6 +100,7 @@ const exampleScheduleGrid: JSX.Element = (
     <Grid2 xs={12} md={6} lg={4}>
       <Card elevation={2} raised>
         <CardHeader
+          sx={{borderBottom: "1px solid rgb(200, 200, 200)"}}
           title="Small Events One"
           subheader="Panorama 1, Rootes Building"
         />

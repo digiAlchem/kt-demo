@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 // Icons
 import AccountBoxRoundedIcon from '@mui/icons-material/AccountBoxRounded';
 import HouseRoundedIcon from '@mui/icons-material/HouseRounded';
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 
 // MUI
 import AppBar from '@mui/material/AppBar';
@@ -32,13 +33,17 @@ const Topbar = () => {
         >
           Kita
         </Typography>
-        <Button color="inherit">Tickets</Button>
-        <Button color="inherit" onClick={() => router.push("/schedule")}>Schedule</Button>
+        <Button color="inherit" disabled>Tickets</Button>
         <Button color="inherit" onClick={() => router.push("/location")}>Location</Button>
-        <Button color="inherit">Dealers</Button>
-        <Button color="inherit">What&apos;s On</Button>
-        <Button color="inherit">FAQ</Button>
-        <Tooltip title="Account">
+        <Button color="inherit" disabled>Dealers</Button>
+        <Button color="inherit" disabled>What&apos;s On</Button>
+        <Button color="inherit" disabled>FAQ</Button>
+        <Tooltip title="Schedule">
+          <IconButton color="inherit" onClick={() => router.push("/schedule")}>
+            <CalendarMonthRoundedIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Users">
           <IconButton color="inherit" onClick={() => router.push("/admin/users")}>
             <AccountBoxRoundedIcon />
           </IconButton>
