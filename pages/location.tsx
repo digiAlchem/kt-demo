@@ -16,7 +16,8 @@ const Home: NextPage = () => {
       <div>
         <Paper elevation={1} sx={{padding: "1rem"}}>
           <Typography
-            variant="h4"
+            className={styles.paperTitle}
+            variant="h5"
             component="div"
             gutterBottom>
             Location
@@ -32,7 +33,8 @@ const Home: NextPage = () => {
         </Paper>
         <Paper elevation={1} sx={{marginTop: "1rem", padding: "1rem"}}>
           <Typography
-            variant="h4"
+            className={styles.paperTitle}
+            variant="h5"
             component="div"
             gutterBottom>
             Accommodation

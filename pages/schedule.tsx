@@ -2,6 +2,7 @@ import React from 'react';
 import type { NextPage } from 'next';
 import Layout from '../components/Layout/Layout';
 import styles from '../styles/Home.module.scss';
+import { useMediaQuery } from 'usehooks-ts';
 
 // Icons
 import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
@@ -185,6 +186,7 @@ const exampleScheduleGrid: JSX.Element = (
 
 const Schedule: NextPage = () => {
   const [currentScheduleTab, setCurrentScheduleTab] = React.useState(0);
+  const isTablet = useMediaQuery("(min-width: 500px)");
 
   function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
@@ -215,6 +217,7 @@ const Schedule: NextPage = () => {
       <div>
         <Paper elevation={1} sx={{padding: "1rem"}}>
           <Typography
+            className={styles.paperTitle}
             gutterBottom
             variant="h5"
             component="div">
@@ -222,7 +225,7 @@ const Schedule: NextPage = () => {
           </Typography>
           <div className={styles.happeningEventsList}>
             <div>
-              <Card elevation={2} raised sx={{height: 300, width: 400}}>
+              <Card elevation={2} raised sx={{height: 300, width: (isTablet ? 400 : 300)}}>
                 <CardHeader
                   title="Main Hall"
                   subheader="Butterworth Hall, Arts Centre"
@@ -244,7 +247,7 @@ const Schedule: NextPage = () => {
                   </Typography>
                 </CardContent>
               </Card>
-              <Card elevation={2} raised sx={{height: 300, width: 400}}>
+              <Card elevation={2} raised sx={{height: 300, width: (isTablet ? 400 : 300)}}>
                 <CardHeader
                   title="Small Events One"
                   subheader="Panorama 1, Rootes Building"
@@ -266,7 +269,7 @@ const Schedule: NextPage = () => {
                   </Typography>
                 </CardContent>
               </Card>
-              <Card elevation={2} raised sx={{flexGrow: 0, height: 300, width: 400}}>
+              <Card elevation={2} raised sx={{flexGrow: 0, height: 300, width: (isTablet ? 400 : 300)}}>
                 <CardHeader
                   title="Medium Events"
                   subheader="Studio, Arts Centre"
@@ -288,7 +291,7 @@ const Schedule: NextPage = () => {
                   </Typography>
                 </CardContent>
               </Card>
-              <Card elevation={2} raised sx={{flexGrow: 0, height: 300, width: 400}}>
+              <Card elevation={2} raised sx={{flexGrow: 0, height: 300, width: (isTablet ? 400 : 300)}}>
                 <CardHeader
                   title="Medium Events"
                   subheader="Studio, Arts Centre"
@@ -315,15 +318,13 @@ const Schedule: NextPage = () => {
         </Paper>
         <Paper elevation={1} sx={{marginTop: "1rem", padding: "1rem"}}>
           <Typography
+            className={styles.paperTitle}
             gutterBottom
             variant="h5"
             component="div">
             Your schedule
           </Typography>
-          <Container sx={{alignItems: "center", display: "flex", flexDirection: "column", height: 190, textAlign: "center"}}>
-            <div className={styles.featureIcon}>
-              <CalendarTodayRoundedIcon fontSize="large" />
-            </div>
+          <Container sx={{alignItems: "center", color: "rgb(120, 120, 120)", display: "flex", flexDirection: "column", textAlign: "center"}}>
             <Typography component="div" variant="h5" sx={{margin: "1rem 0"}}>
               Nothing here yet!
             </Typography>
@@ -334,6 +335,7 @@ const Schedule: NextPage = () => {
         </Paper>
         <Paper elevation={1} sx={{marginTop: "1rem", padding: "1rem"}}>
           <Typography
+            className={styles.paperTitle}
             gutterBottom
             variant="h5"
             component="div">

@@ -326,15 +326,16 @@ const AdminUsers: NextPage = () => {
 
   return (
     <Layout title="User Admin">
-      <div className={styles.main}>
+      <div>
         <Paper elevation={1} sx={{padding: "1rem"}}>
           {editUserDialog}
           {checkUserInDialog}
 
           <Typography
-            variant="h4"
+            gutterBottom
+            variant="h5"
             component="div"
-            sx={{padding: "1rem"}}
+            className={styles.paperTitle}
           >
             Registered users
           </Typography>
