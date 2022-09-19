@@ -15,6 +15,7 @@ import NewspaperRoundedIcon from '@mui/icons-material/NewspaperRounded';
 import BalanceRoundedIcon from '@mui/icons-material/BalanceRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
+import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
 
 // MUI
 import Paper from '@mui/material/Paper';
@@ -39,6 +40,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
 import FormLabel from '@mui/material/FormLabel';
+import { Tooltip } from '@mui/material';
 
 const AdminUsers: NextPage = () => {
   const [currentPage, setCurrentPage] = React.useState(0);
@@ -109,9 +111,16 @@ const AdminUsers: NextPage = () => {
         <TableCell>{regDate}</TableCell>
         <TableCell>{paidDate}</TableCell>
         <TableCell>
-          <IconButton color="inherit" onClick={() => openEditDialog(row)}>
-            <CreateRoundedIcon />
-          </IconButton>
+          <Tooltip title="Edit user">
+            <IconButton color="inherit" onClick={() => openEditDialog(row)}>
+              <CreateRoundedIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Check user in">
+            <IconButton color="inherit" onClick={() => openEditDialog(row)}>
+              <ConfirmationNumberRoundedIcon />
+            </IconButton>
+          </Tooltip>
         </TableCell>
       </TableRow>
     );
@@ -230,7 +239,7 @@ const AdminUsers: NextPage = () => {
                   <TableCell>Registration type(s)</TableCell>
                   <TableCell>Registered</TableCell>
                   <TableCell>Paid</TableCell>
-                  <TableCell>Edit</TableCell>
+                  <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

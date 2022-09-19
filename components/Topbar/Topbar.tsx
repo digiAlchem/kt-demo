@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import AccountBoxRoundedIcon from '@mui/icons-material/AccountBoxRounded';
 import HouseRoundedIcon from '@mui/icons-material/HouseRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 
 // MUI
 import AppBar from '@mui/material/AppBar';
@@ -46,6 +47,11 @@ const Topbar = () => {
         <Tooltip title="Users">
           <IconButton color="inherit" onClick={() => router.push("/admin/users")}>
             <AccountBoxRoundedIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Menu">
+          <IconButton color="inherit">
+            <MenuRoundedIcon />
           </IconButton>
         </Tooltip>
       </Toolbar>
