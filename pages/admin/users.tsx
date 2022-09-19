@@ -5,6 +5,7 @@ import Layout from '../../components/Layout/Layout';
 import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import demoData from "../../data/users.json";
+import { generateSlug, totalUniqueSlugs } from "random-word-slugs";
 
 // Icons
 import DiamondRoundedIcon from '@mui/icons-material/DiamondRounded';
@@ -16,6 +17,7 @@ import BalanceRoundedIcon from '@mui/icons-material/BalanceRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import CreateRoundedIcon from '@mui/icons-material/CreateRounded';
 import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 
 // MUI
 import Paper from '@mui/material/Paper';
@@ -46,7 +48,50 @@ const AdminUsers: NextPage = () => {
   const [currentPage, setCurrentPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
+  const [checkInDialogOpen, setCheckInDialogOpen] = React.useState(false);
   const [currentEditTarget, setCurrentEditTarget] = React.useState<Record<string, any>>(demoData[0]);
+  const [currentFilter, setCurrentFilter] = React.useState("");
+  const [filteredUsers, setFilteredUsers] = React.useState(demoData);
+
+  React.useEffect(() => {
+    demoData.forEach((user) => {
+      user.keyphrase = getKeyphrase();
+    });
+
+    setFilteredUsers(demoData);
+  }, []);
+
+  React.useEffect(() => {
+    // No filter, return user list to normal
+    if (!currentFilter) {
+      setFilteredUsers(demoData);
+      return;
+    };
+
+    const filteredData = demoData.filter((data) => {
+      if (
+        data.badgeName.toLocaleLowerCase().includes(currentFilter) ||
+        data.name.toLocaleLowerCase().includes(currentFilter) ||
+        data.number.includes(currentFilter)
+      ) {
+        return true;
+      };
+
+      return false;
+    });
+
+    setFilteredUsers(filteredData);
+  }, [currentFilter]);
+
+  const getKeyphrase = () => {
+    return generateSlug(4, {
+      format: "kebab",
+      partsOfSpeech: ["adjective", "noun", "adjective", "noun"],
+      categories: {
+        adjective: ["appearance", "color", "personality", "time"],
+      },
+    });
+  };
 
   const getBadgeChips = (userNumber: string, badges: string[]) => {
     const badgeChips = badges.map(badge => {
@@ -117,7 +162,7 @@ const AdminUsers: NextPage = () => {
             </IconButton>
           </Tooltip>
           <Tooltip title="Check user in">
-            <IconButton color="inherit" onClick={() => openEditDialog(row)}>
+            <IconButton color="inherit" onClick={() => openCheckInDialog(row)}>
               <ConfirmationNumberRoundedIcon />
             </IconButton>
           </Tooltip>
@@ -128,7 +173,7 @@ const AdminUsers: NextPage = () => {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    currentPage > 0 ? Math.max(0, (1 + currentPage) * rowsPerPage - demoData.length) : 0;
+    currentPage > 0 ? Math.max(0, (1 + currentPage) * rowsPerPage - filteredUsers.length) : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -145,7 +190,7 @@ const AdminUsers: NextPage = () => {
   };
 
   const getPaginatedRows = () => {
-   return demoData.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
+   return filteredUsers.slice(currentPage * rowsPerPage, currentPage * rowsPerPage + rowsPerPage);
   };
 
   const openEditDialog = (data: Record<string, any>) => {
@@ -153,64 +198,138 @@ const AdminUsers: NextPage = () => {
     setEditDialogOpen(true);
   };
 
+  const openCheckInDialog = (data: Record<string, any>) => {
+    setCurrentEditTarget(data);
+    setCheckInDialogOpen(true);
+  };
+
+  const editUserDialog = (
+    <Dialog
+      open={editDialogOpen}
+      onClose={() => setEditDialogOpen(false)}
+      scroll="paper"
+      maxWidth="md"
+      fullWidth
+      aria-labelledby="scroll-dialog-title"
+      aria-describedby="scroll-dialog-description"
+    >
+      <DialogTitle id="scroll-dialog-title">Edit user</DialogTitle>
+      <DialogContent dividers>
+        <FormGroup row sx={{gap: "1rem"}}>
+          <TextField
+            margin="dense"
+            id="reg-number"
+            label="Number"
+            disabled
+            value={currentEditTarget.number}
+            variant="outlined"
+            sx={{flexGrow: 1}}
+          />
+          <TextField
+            margin="dense"
+            id="reg-keyphrase"
+            label="Keyphrase"
+            disabled
+            value={currentEditTarget.keyphrase}
+            variant="outlined"
+            sx={{flexGrow: 1}}
+          />
+        </FormGroup>
+        <FormGroup row sx={{gap: "1rem"}}>
+          <TextField
+            margin="dense"
+            id="name"
+            label="Name"
+            value={currentEditTarget.name}
+            variant="outlined"
+            sx={{flexGrow: 1}}
+          />
+          <TextField
+            margin="dense"
+            id="badge-name"
+            label="Badge name"
+            value={currentEditTarget.badgeName}
+            variant="outlined"
+            sx={{flexGrow: 1}}
+          />
+        </FormGroup>
+        <FormLabel component="legend">Registration types</FormLabel>
+        <FormGroup>
+          <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("standard")} />} label="Standard" />
+          <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("vip")} />} label="VIP" />
+          <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("committee")} />} label="Committee" />
+          <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("guest")} />} label="Guest" />
+          <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("gopher")} />} label="Gopher" />
+          <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("event")} />} label="Event Runner" />
+          <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("press")} />} label="Press" />
+        </FormGroup>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setEditDialogOpen(false)}>Discard</Button>
+        <Button onClick={() => setEditDialogOpen(false)} variant="contained">Save</Button>
+      </DialogActions>
+    </Dialog>
+  );
+
+  const checkUserInDialog = (
+    <Dialog
+      open={checkInDialogOpen}
+      onClose={() => setCheckInDialogOpen(false)}
+      scroll="paper"
+      maxWidth="md"
+      fullWidth
+      aria-labelledby="scroll-dialog-title"
+      aria-describedby="scroll-dialog-description"
+    >
+      <DialogTitle id="scroll-dialog-title">Check user in</DialogTitle>
+      <DialogContent dividers>
+        <div>
+          <strong>Please ensure all the below information is correct:</strong>
+        </div>
+        <div style={{fontSize: "0.75rem", marginTop: "1rem"}}>
+          Name
+        </div>
+        <div style={{fontSize: "1.25rem", fontWeight: 700}}>
+          {currentEditTarget.name}
+        </div>
+        <div style={{fontSize: "0.75rem", marginTop: "1rem"}}>
+          Date of birth
+        </div>
+        <div style={{fontSize: "1.25rem", fontWeight: 700}}>
+          01/01/19XX
+        </div>
+        <div style={{fontSize: "0.75rem", marginTop: "1rem"}}>
+          Badge number
+        </div>
+        <div style={{fontSize: "1.25rem", fontWeight: 700}}>
+          {currentEditTarget.number}
+        </div>
+        <div style={{fontSize: "0.75rem", marginTop: "1rem"}}>
+          Badge name
+        </div>
+        <div style={{fontSize: "1.25rem", fontWeight: 700}}>
+          {currentEditTarget.badgeName}
+        </div>
+        <div style={{fontSize: "0.75rem", marginTop: "1rem"}}>
+          Keyphrase
+        </div>
+        <div style={{fontSize: "1.25rem", fontWeight: 700}}>
+          {currentEditTarget.keyphrase}
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setCheckInDialogOpen(false)}>Cancel Check-In</Button>
+        <Button onClick={() => setCheckInDialogOpen(false)} variant="contained">Check User In</Button>
+      </DialogActions>
+    </Dialog>
+  );
+
   return (
     <Layout title="User Admin">
       <div className={styles.main}>
         <Paper elevation={1} sx={{padding: "1rem"}}>
-          <Dialog
-            open={editDialogOpen}
-            onClose={() => setEditDialogOpen(false)}
-            scroll="paper"
-            maxWidth="md"
-            fullWidth
-            aria-labelledby="scroll-dialog-title"
-            aria-describedby="scroll-dialog-description"
-          >
-            <DialogTitle id="scroll-dialog-title">Edit User</DialogTitle>
-            <DialogContent dividers>
-              <TextField
-                margin="dense"
-                id="reg-number"
-                label="Number"
-                disabled
-                fullWidth
-                value={currentEditTarget.number}
-                variant="outlined"
-              />
-              <FormGroup row sx={{gap: "1rem"}}>
-                <TextField
-                  margin="dense"
-                  id="name"
-                  label="Name"
-                  value={currentEditTarget.name}
-                  variant="outlined"
-                  sx={{flexGrow: 1}}
-                />
-                <TextField
-                  margin="dense"
-                  id="badge-name"
-                  label="Badge name"
-                  value={currentEditTarget.badgeName}
-                  variant="outlined"
-                  sx={{flexGrow: 1}}
-                />
-              </FormGroup>
-              <FormLabel component="legend">Registration types</FormLabel>
-              <FormGroup>
-                <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("standard")} />} label="Standard" />
-                <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("vip")} />} label="VIP" />
-                <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("committee")} />} label="Committee" />
-                <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("guest")} />} label="Guest" />
-                <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("gopher")} />} label="Gopher" />
-                <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("event")} />} label="Event Runner" />
-                <FormControlLabel control={<Checkbox checked={currentEditTarget.badges.includes("press")} />} label="Press" />
-              </FormGroup>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setEditDialogOpen(false)}>Discard</Button>
-              <Button onClick={() => setEditDialogOpen(false)} variant="contained">Save</Button>
-            </DialogActions>
-          </Dialog>
+          {editUserDialog}
+          {checkUserInDialog}
 
           <Typography
             variant="h4"
@@ -219,9 +338,25 @@ const AdminUsers: NextPage = () => {
           >
             Registered users
           </Typography>
+          <div className={styles.filterInput}>
+            <TextField
+              margin="dense"
+              id="users-filter"
+              label="Filter by name, badge name or badge number..."
+              onChange={(event) => setCurrentFilter(event.currentTarget.value.toLocaleLowerCase())}
+              sx={{flexGrow: 1}}
+              value={currentFilter}
+              variant="outlined"
+            />
+            <Tooltip title="Clear filter">
+              <IconButton onClick={() => setCurrentFilter("")}>
+                <CancelRoundedIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
           <TablePagination
             component="div"
-            count={demoData.length}
+            count={filteredUsers.length}
             page={currentPage}
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}
@@ -256,7 +391,7 @@ const AdminUsers: NextPage = () => {
           </TableContainer>
           <TablePagination
             component="div"
-            count={demoData.length}
+            count={filteredUsers.length}
             page={currentPage}
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}

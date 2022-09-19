@@ -1,3 +1,5 @@
+@use "./Variables.module.scss" as var;
+
 .badgeChip {
   padding-left: 0.35rem;
 
@@ -24,6 +26,33 @@
   &[data-badge="guest"] {
     background-color: rgb(255, 244, 82);
   }
+}
+
+.filterInput {
+  align-items: center;
+  display: flex;
+
+  button {
+    margin-left: 0.5rem;
+  }
+}
+
+.happeningEventsList {
+  overflow-x: scroll;
+  padding: 1rem;
+
+  > div {
+    gap: 1rem;
+    display: inline-flex;
+    justify-content: flex-start;
+  }
+}
+
+.featureIcon {
+  background-color: var.$primary-fade;
+  border-radius: 50%;
+  color: rgb(255, 255, 255);
+  padding: 0.75rem;
 }
 
 .noPad {
